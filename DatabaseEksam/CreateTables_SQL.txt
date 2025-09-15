@@ -1,0 +1,150 @@
+create table Players(
+player_id serial primary key,
+username varchar(30) not null,
+password varchar(30) not null
+);
+
+create table Race(
+race_name varchar(30) primary key,
+skill varchar(30)
+);
+
+create table Quests(
+quest_id serial primary key,
+gold_value smallint check (gold_value > 0) default 1,
+xp int check (xp > 0) default 1
+);
+
+create table Biome (
+biome_name varchar(30) primary key,
+temperature smallint not null,
+weather_condition varchar(50)
+);
+
+create table Locale(
+locale_name varchar(30) primary key,
+locale_type varchar(30) not null,
+biome_name varchar(30) references Biome(biome_name) not null
+);
+
+create table Abilities(
+ability_name varchar(30) primary key,
+ability_type varchar(30) not null,
+description varchar(100) not null,
+resource varchar(30),
+damage_type varchar(30)
+);
+
+create table Items(
+item_id serial primary key,
+item_name varchar(30) not null,
+item_type varchar(30) not null,
+item_level smallint check (item_level > 0)
+);
+
+create table Class(
+class_name varchar(30) primary key,
+casting_modifier varchar(30) not null
+);
+
+create table NPC (
+npc_id serial primary key,
+npc_name varchar(30),
+npc_level smallint check(npc_level > 0),
+npc_race varchar(30) references Race(race_name) not null,
+npc_class varchar(30) references Class(class_name)
+);
+
+create table Campaign(
+campaign_name varchar(50) primary key,
+description varchar(100) not null, 
+starting_locale varchar(30) references Locale(locale_name) not null
+);
+
+create table Characters(
+char_id serial primary key,
+char_name varchar(30) not null,
+char_level smallint check (char_level > 0) default 1,
+feats varchar(100),
+x_position int not null,
+y_position int not null,
+provenance varchar(30) references Locale(locale_name) not null,
+char_race varchar(30) references Race(race_name) not null,
+campaign_name varchar(50) references Campaign(campaign_name) not null,
+created_by int references Players(player_id) not null
+);
+
+create table Equipment(
+slot_type varchar(30) not null,
+char_id int references Characters(char_id),
+item_id int references Items(item_id),
+primary key(slot_type, char_id)
+);
+
+create table Stats(
+char_id int references Characters(char_id),
+strength smallint not null,
+dexterity smallint not null,
+constitution smallint not null,
+intelligence smallint not null,
+wisdom smallint not null,
+charisma smallint not null
+);
+
+create table Completed_Quests(
+quest_id int references Quests(quest_id),
+char_id int references Characters(char_id),
+primary key(quest_id, char_id)
+);
+
+create table Quests_In_Campaign(
+quest_id int references Quests(quest_id),
+campaign_name varchar(50) references Campaign(campaign_name),
+primary key(quest_id, campaign_name)
+);
+
+create table Character_Abilities(
+ability_name varchar(30) references Abilities(ability_name),
+char_id int references Characters(char_id),
+primary key(ability_name, char_id)
+);
+
+create table Character_Classes(
+class_level smallint check (class_level > 0),
+class_name varchar(30) references Class(class_name),
+char_id int references Characters(char_id),
+primary key(class_name, char_id)
+);
+
+create table Character_Items(
+amount smallint default 1,
+item_id int references Items(item_id),
+char_id int references Characters(char_id),
+primary key(item_id, char_id)
+);
+
+create table NPC_Abilities(
+ability_name varchar(30) references Abilities(ability_name),
+npc_id int references NPC(npc_id),
+primary key(ability_name, npc_id)
+);
+
+create table Item_Abilities(
+ability_name varchar(30) references Abilities(ability_name),
+item_id int references Items(item_id),
+primary key(ability_name, item_id)
+);
+
+create table Primary_Fauna(
+biome_name varchar(30) references Biome(biome_name),
+fauna_name varchar(30) not null,
+primary key(biome_name, fauna_name)
+);
+
+create unique index idx_pl_username on Players(username);
+create index idx_ch_race on Characters(char_race);
+create index idx_ch_campaign on Characters(campaign_name);
+create index idx_ch_createdBy on Characters(createdBy);
+create index idx_eq_itemid on Equipment(item_id);
+create index idx_npc_race on NPC(npc_race);
+create index idx_npc_class on NPC(npc_class);
