@@ -29,16 +29,10 @@ public class PlayerService
         return Convert.ToInt32(result);
     }
     
-    public int CreatePlayerWithOrm(string username, string password)
+    public int CreatePlayerWithOrm(Player player)
     {
         using var context = new DatabaseContext();
-
-        var player = new Player
-        {
-            Username = username,
-            Password = password
-        };
-
+        
         context.Players.Add(player);
         context.SaveChanges();
 

@@ -1,3 +1,4 @@
+using DatabaseEksam.ORMClasses;
 using Npgsql;
 
 namespace DatabaseEksam.TestStuff;
@@ -16,7 +17,7 @@ public class PlayerAccountTest
             // Test creating and reading a player
             TestCreateAndReadPlayer(playerService, "TestPlayer123", "Kiryu");
             
-            int id = playerService.CreatePlayerWithOrm("TestPlayerORM", "Kiryu");
+            int id = playerService.CreatePlayerWithOrm(new Player {Username = "TestPlayerORM", Password = "Kiryu"});
             Console.WriteLine($"Player {id} created with ORM");
             // You can add more tests here
             // TestUpdatePlayer(playerService);
