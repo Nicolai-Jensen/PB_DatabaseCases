@@ -16,6 +16,8 @@ public class PlayerAccountTest
             // Test creating and reading a player
             TestCreateAndReadPlayer(playerService, "TestPlayer123", "Kiryu");
             
+            int id = playerService.CreatePlayerWithOrm("TestPlayerORM", "Kiryu");
+            Console.WriteLine($"Player {id} created with ORM");
             // You can add more tests here
             // TestUpdatePlayer(playerService);
             // TestDeletePlayer(playerService);

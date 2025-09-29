@@ -1,3 +1,4 @@
+using DatabaseEksam.ORMClasses;
 using Npgsql;
 
 namespace DatabaseEksam.TestStuff;
@@ -26,6 +27,22 @@ public class PlayerService
         
         var result = command.ExecuteScalar();
         return Convert.ToInt32(result);
+    }
+    
+    public int CreatePlayerWithOrm(string username, string password)
+    {
+        using var context = new DatabaseContext();
+
+        var player = new Player
+        {
+            Username = username,
+            Password = password
+        };
+
+        context.Players.Add(player);
+        context.SaveChanges();
+
+        return player.PlayerId; // This is auto-populated after SaveChanges()
     }
     
     public PlayerData? GetPlayerById(int playerId)
