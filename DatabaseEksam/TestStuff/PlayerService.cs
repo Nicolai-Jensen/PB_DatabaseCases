@@ -36,7 +36,7 @@ public class PlayerService
         context.Players.Add(player);
         context.SaveChanges();
 
-        return player.PlayerId; // This is auto-populated after SaveChanges()
+        return player.PlayerId;
     }
     
     public PlayerData? GetPlayerById(int playerId)
